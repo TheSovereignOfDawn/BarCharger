@@ -1,12 +1,16 @@
-def getPlatesManagement(desiredWeight, isBodyweightMovement, areCalibratedStopPlatesUsed):
+def getPlatesManagement(desiredWeight, isBodyweightMovement, areCalibratedStopPlatesUsed, isRecord):
     availablePlateWeightList = [25, 20, 15, 10, 5, 2.5, 1.25]
     nPlateWeightRequiredDict = {}
     isDesiredWeightOk = True
-    if (isBodyweightMovement == True and desiredWeight % 1.25 == 0):
+    minimumBodyweightMovementIncrement = 1.25
+    if (isRecord):
+        minimumBodyweightMovementIncrement = 0.25
+    minimumBarMovementIncrement = 2 * minimumBodyweightMovementIncrement
+    if (isBodyweightMovement == True and desiredWeight % minimumBodyweightMovementIncrement == 0):
         restWeight = desiredWeight
         for plateWeight in availablePlateWeightList:
             nPlateWeightRequiredDict[str(plateWeight)], restWeight = getNumberOfSimilarPlates(restWeight, plateWeight)
-    elif (desiredWeight % 2.5 == 0):
+    elif (desiredWeight % minimumBarMovementIncrement == 0):
         if (areCalibratedStopPlatesUsed):
             restWeight = ((desiredWeight - 20) / 2) - 2.5
         else:

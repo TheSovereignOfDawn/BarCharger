@@ -13,6 +13,7 @@ class MyUI(QWidget):
         self.layoutManagement()
 
         self.desiredWeightSpinBox.valueChanged.connect(self.updatePlatesDisplay)
+        self.recordCheckBox.checkStateChanged.connect(self.updatePlatesDisplay)
         self.movementGroup.idClicked.connect(self.updatePlatesDisplay)
         self.movementGroup.idClicked.connect(self.calibratedStopPlatesCheckBoxManagement)
         self.calibratedStopPlatesCheckBox.checkStateChanged.connect(self.updatePlatesDisplay)
@@ -23,6 +24,8 @@ class MyUI(QWidget):
         self.desiredWeightSpinBox.setRange(0.00, 500.00)
         self.desiredWeightSpinBox.setSingleStep(0.25)
         self.desiredWeightSpinBox.setValue(100.00)
+        self.recordLabel = QLabel("Record ?")
+        self.recordCheckBox = QCheckBox()
 
         self.movementChoiceLabel = QLabel("Mouvement ?")
         self.bodyweightMovementsRadioButton = QRadioButton("Muscle-up / Traction / Dip ?")
@@ -51,6 +54,8 @@ class MyUI(QWidget):
 
         desiredWeightSecondaryLayout.addWidget(self.desiredWeightLabel)
         desiredWeightSecondaryLayout.addWidget(self.desiredWeightSpinBox)
+        desiredWeightSecondaryLayout.addWidget(self.recordLabel)
+        desiredWeightSecondaryLayout.addWidget(self.recordCheckBox)
 
         movementChoiceSecondaryLayout.addWidget(self.movementChoiceLabel)
         movementChoiceSecondaryLayout.addWidget(self.bodyweightMovementsRadioButton)
@@ -100,7 +105,7 @@ class MyUI(QWidget):
         isBodyweightMovement = self.bodyweightMovementsRadioButton.isChecked()
         areCalibratedStopPlatesUsed = self.calibratedStopPlatesCheckBox.isChecked()
         platesRequiredDict, isDesiredWeightOk = getPlatesManagement(self.desiredWeightSpinBox.value(), isBodyweightMovement,
-                                                 areCalibratedStopPlatesUsed)
+                                                 areCalibratedStopPlatesUsed, self.recordCheckBox.isChecked())
         platesList = [float(k) for k, v in platesRequiredDict.items() for _ in range(v)]
         self.resetPlateLabels()
         if (isDesiredWeightOk):
