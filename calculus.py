@@ -5,6 +5,9 @@ def getPlatesManagement(desiredWeight, isBodyweightMovement, areCalibratedStopPl
     minimumBodyweightMovementIncrement = 1.25
     if (isRecord):
         minimumBodyweightMovementIncrement = 0.25
+        recordPlates = [0.5, 0.25]
+        for plate in recordPlates:
+            availablePlateWeightList.append(plate)
     minimumBarMovementIncrement = 2 * minimumBodyweightMovementIncrement
     if (isBodyweightMovement == True and desiredWeight % minimumBodyweightMovementIncrement == 0):
         restWeight = desiredWeight

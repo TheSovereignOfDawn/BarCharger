@@ -1,6 +1,6 @@
 from PySide6 import QtCore
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QDoubleSpinBox, QRadioButton, QButtonGroup,
-                               QCheckBox, QLabel)
+                               QCheckBox, QFrame)
 from calculus import getPlatesManagement
 
 class MyUI(QWidget):
@@ -25,6 +25,7 @@ class MyUI(QWidget):
         self.desiredWeightSpinBox.setSingleStep(0.25)
         self.desiredWeightSpinBox.setValue(100.00)
         self.recordLabel = QLabel("Record ?")
+        self.recordLabel.setAlignment(QtCore.Qt.AlignRight)
         self.recordCheckBox = QCheckBox()
 
         self.movementChoiceLabel = QLabel("Mouvement ?")
@@ -36,6 +37,7 @@ class MyUI(QWidget):
         self.movementGroup.addButton(self.barMovementsRadioButton, 2)
 
         self.statusLabel = QLabel()
+        self.statusLabel.setAlignment(QtCore.Qt.AlignCenter)
 
         self.calibratedStopPlatesLabel = QLabel("Stop disques calibrés ?")
         self.calibratedStopPlatesCheckBox = QCheckBox()
@@ -43,7 +45,9 @@ class MyUI(QWidget):
 
         self.requiredPlatesLabelList = []
         for i in range(0, 15):
-            self.requiredPlatesLabelList.append(QLabel())
+            label = QLabel()
+            label.setAlignment(QtCore.Qt.AlignCenter)
+            self.requiredPlatesLabelList.append(label)
 
     def layoutManagement(self):
         primaryLayout = QVBoxLayout(self)
@@ -77,21 +81,21 @@ class MyUI(QWidget):
         color = ""
         match (plateWeight):
             case 25:
-                color = "red;"
+                color = "red"
             case 20:
-                color = "blue;"
+                color = "blue"
             case 15:
-                color = "yellow;"
+                color = "yellow"
             case 10:
-                color = "green;"
+                color = "green"
             case 5:
-                color = "white;"
+                color = "white"
             case 2.5:
-                color = "black;"
-            case 1.25:
-                color = "grey;"
+                color = "black"
+            case 1.25 | 0.5 | 0.25:
+                color = "grey"
             case _:
-                color = "purple;"
+                color = "purple"
 
         return color
 
@@ -113,10 +117,17 @@ class MyUI(QWidget):
             for i in range(0, len(platesList)):
                 self.requiredPlatesLabelList[i].setText(str(platesList[i]) + " kg")
                 backgroundColor = self.getPlateColor(platesList[i])
-                if backgroundColor == "black;":
-                    self.requiredPlatesLabelList[i].setStyleSheet("color: white; background-color: " + backgroundColor)
-                else:
-                    self.requiredPlatesLabelList[i].setStyleSheet("background-color: " + backgroundColor)
+                textColor = "black"
+                if (backgroundColor == "black"):
+                    textColor = "white"
+                self.requiredPlatesLabelList[i].setStyleSheet(f"""
+                QLabel {{
+                border-radius: 12px;
+                border: 2px solid black;
+                color: {textColor};
+                background-color: {backgroundColor};
+                }}
+                """)
         else:
             self.statusLabel.setText("La charge indiquée ne respecte pas les règles de compétition.")
 
