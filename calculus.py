@@ -23,6 +23,9 @@ def getPlatesManagement(desiredWeight, isBodyweightMovement, areCalibratedStopPl
     else:
         isDesiredWeightOk = False
 
+    if (len([float(k) for k, v in nPlateWeightRequiredDict.items() for _ in range(v)]) > 15):
+        isDesiredWeightOk = False
+
     return nPlateWeightRequiredDict, isDesiredWeightOk
 
 def getNumberOfSimilarPlates(restWeight, desiredPlateWeight):

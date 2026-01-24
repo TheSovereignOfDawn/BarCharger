@@ -1,6 +1,7 @@
 from PySide6 import QtCore
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QDoubleSpinBox, QRadioButton, QButtonGroup,
-                               QCheckBox, QFrame)
+                               QCheckBox)
+from PySide6.QtGui import QFont
 from calculus import getPlatesManagement
 
 class MyUI(QWidget):
@@ -9,14 +10,13 @@ class MyUI(QWidget):
 
         self.setWindowTitle("BarCharger v0.1")
 
+        self.displayFont = QFont("Amasis MT Pro")
+        self.displayFont.setBold(True)
+        self.displayFont.setPixelSize(25)
+
         self.widgetCreation()
         self.layoutManagement()
-
-        self.desiredWeightSpinBox.valueChanged.connect(self.updatePlatesDisplay)
-        self.recordCheckBox.checkStateChanged.connect(self.updatePlatesDisplay)
-        self.movementGroup.idClicked.connect(self.updatePlatesDisplay)
-        self.movementGroup.idClicked.connect(self.calibratedStopPlatesCheckBoxManagement)
-        self.calibratedStopPlatesCheckBox.checkStateChanged.connect(self.updatePlatesDisplay)
+        self.signalSlotConnection()
 
     def widgetCreation(self):
         self.desiredWeightLabel = QLabel("Charge ?")
@@ -38,6 +38,13 @@ class MyUI(QWidget):
 
         self.statusLabel = QLabel()
         self.statusLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.statusLabel.setFont(self.displayFont)
+        self.statusLabel.setStyleSheet("""
+                QLabel {
+                border-radius: 12px;
+                border: 2px solid black;
+                }
+                """)
 
         self.calibratedStopPlatesLabel = QLabel("Stop disques calibrés ?")
         self.calibratedStopPlatesCheckBox = QCheckBox()
@@ -47,6 +54,7 @@ class MyUI(QWidget):
         for i in range(0, 15):
             label = QLabel()
             label.setAlignment(QtCore.Qt.AlignCenter)
+            label.setFont(self.displayFont)
             self.requiredPlatesLabelList.append(label)
 
     def layoutManagement(self):
@@ -72,10 +80,22 @@ class MyUI(QWidget):
             requiredPlatesSecondaryLayout.addWidget(label)
 
         primaryLayout.addLayout(desiredWeightSecondaryLayout)
+        primaryLayout.setStretch(0, 1)
         primaryLayout.addLayout(movementChoiceSecondaryLayout)
+        primaryLayout.setStretch(1, 1)
         primaryLayout.addLayout(calibratedStopPlatesSecondaryLayout)
+        primaryLayout.setStretch(2, 1)
         primaryLayout.addWidget(self.statusLabel)
+        primaryLayout.setStretch(3, 2)
         primaryLayout.addLayout(requiredPlatesSecondaryLayout)
+        primaryLayout.setStretch(4, 5)
+
+    def signalSlotConnection(self):
+        self.desiredWeightSpinBox.valueChanged.connect(self.updatePlatesDisplay)
+        self.recordCheckBox.checkStateChanged.connect(self.updatePlatesDisplay)
+        self.movementGroup.idClicked.connect(self.updatePlatesDisplay)
+        self.movementGroup.idClicked.connect(self.calibratedStopPlatesCheckBoxManagement)
+        self.calibratedStopPlatesCheckBox.checkStateChanged.connect(self.updatePlatesDisplay)
 
     def getPlateColor(self, plateWeight):
         color = ""
